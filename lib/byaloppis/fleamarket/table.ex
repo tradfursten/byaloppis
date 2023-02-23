@@ -2,12 +2,15 @@ defmodule Byaloppis.Fleamarket.Table do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Byaloppis.Fleamarket.Event
+
   schema "tables" do
     field :address, :string
     field :description, :string
     field :lat, :float
     field :lng, :float
-    field :event_id, :id
+
+    belongs_to :event, Event
 
     timestamps()
   end

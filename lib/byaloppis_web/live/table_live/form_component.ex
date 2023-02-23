@@ -8,7 +8,7 @@ defmodule ByaloppisWeb.TableLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        <%= @title %> - <%= @event.name %>
         <:subtitle>Use this form to manage table records in your database.</:subtitle>
       </.header>
 
@@ -113,6 +113,9 @@ defmodule ByaloppisWeb.TableLive.FormComponent do
   end
 
   def handle_event("save", %{"table" => table_params}, socket) do
+    IO.inspect(socket.assigns)
+    table_params = Map.merge(table_params, %{"event_id" => socket.assigns.event.id})
+    IO.inspect(table_params)
     save_table(socket, socket.assigns.action, table_params)
   end
 
@@ -131,7 +134,8 @@ defmodule ByaloppisWeb.TableLive.FormComponent do
     end
   end
 
-  defp save_table(socket, :new, table_params) do
+  defp save_table(socket, :new_table, table_params) do
+    IO.inspect(table_params)
     case Fleamarket.create_table(table_params) do
       {:ok, table} ->
         notify_parent({:saved, table})

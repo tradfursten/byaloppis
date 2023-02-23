@@ -37,6 +37,7 @@ Hooks.Map = {
       container: "map",
       style: 'mapbox://styles/mapbox/streets-v11',
       zoom: 14,
+      maxZoom: 18,
       center: [20.252, 63.824]
     });
 
@@ -92,9 +93,24 @@ Hooks.Map = {
        markers.push(new mapboxgl.Marker()
         .setLngLat([coords.lng, coords.lat])
         .addTo(map));
-
-
     })
+
+    this.handleEvent("list_tables", (e) => {
+      markers = [];
+      e.tables.forEach(it => {
+        markers.push(new mapboxgl.Marker()
+        .setLngLat([it.lng, it.lat])
+        .addTo(map));
+      });
+      const bounds = new mapboxgl.LngLatBounds();
+
+      markers.forEach(it => {
+          bounds.extend(it.getLngLat());
+      });
+      
+      map.fitBounds(bounds);
+      
+    });
   }
 }
 

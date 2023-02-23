@@ -15,6 +15,7 @@
   <:col :let={{_id, event}} label="Name"><%= event.name %></:col>
   <:col :let={{_id, event}} label="Date"><%= event.date %></:col>
   <:col :let={{_id, event}} label="Description"><%= event.description %></:col>
+  <:col :let={{_id, event}} label="Tables"><%= Enum.count(event.tables) %></:col>
   <:action :let={{_id, event}}>
     <div class="sr-only">
       <.link navigate={~p"/events/#{event}"}>Show</.link>
@@ -42,6 +43,23 @@
     id={@event.id || :new}
     title={@page_title}
     action={@live_action}
+    event={@event}
+    patch={~p"/events"}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action in [:new_table, :edit_table]}
+  id="table-modal"
+  show
+  on_cancel={JS.navigate(~p"/events")}
+>
+  <.live_component
+    module={ByaloppisWeb.TableLive.FormComponent}
+    id={:new_table}
+    title={@page_title}
+    action={@live_action}
+    table={@table}
     event={@event}
     patch={~p"/events"}
   />

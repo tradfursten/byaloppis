@@ -6,7 +6,8 @@ defmodule ByaloppisWeb.TableLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :tables, Fleamarket.list_tables())}
+
+    {:ok, stream(socket, :tables, Fleamarket.list_tables() |> IO.inspect)}
   end
 
   @impl true

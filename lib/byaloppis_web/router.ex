@@ -27,6 +27,7 @@ defmodule ByaloppisWeb.Router do
     live "/events/:id/edit", EventLive.Index, :edit
 
     live "/events/:id", EventLive.Show, :show
+    live "/events/:id/tables/new", EventLive.Index, :new_table
     live "/events/:id/show/edit", EventLive.Show, :edit
 
     live "/tables", TableLive.Index, :index

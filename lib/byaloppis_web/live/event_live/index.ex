@@ -3,10 +3,13 @@ defmodule ByaloppisWeb.EventLive.Index do
 
   alias Byaloppis.Fleamarket
   alias Byaloppis.Fleamarket.Event
+  alias Byaloppis.Fleamarket.Table
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :events, Fleamarket.list_events())}
+    events = Fleamarket.list_events_with_tables()
+    IO.inspect(events)
+    {:ok, stream(socket, :events, events)}
   end
 
   @impl true
@@ -18,6 +21,13 @@ defmodule ByaloppisWeb.EventLive.Index do
     socket
     |> assign(:page_title, "Edit Event")
     |> assign(:event, Fleamarket.get_event!(id))
+  end
+
+  defp apply_action(socket, :new_table, %{"id" => id}) do
+    socket
+    |> assign(:page_title, "New Table")
+    |> assign(:event, Fleamarket.get_event!(id))
+    |> assign(:table, %Table{})
   end
 
   defp apply_action(socket, :new, _params) do

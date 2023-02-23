@@ -6,7 +6,7 @@ defmodule Byaloppis.Fleamarket do
   import Ecto.Query, warn: false
   alias Byaloppis.Repo
 
-  alias Byaloppis.Fleamarket.Event
+  alias Byaloppis.Fleamarket.{Event, Table}
 
   @doc """
   Returns the list of events.
@@ -19,6 +19,11 @@ defmodule Byaloppis.Fleamarket do
   """
   def list_events do
     Repo.all(Event)
+  end
+
+  def list_events_with_tables do
+    Repo.all(Event)
+    |> Repo.preload(:tables)
   end
 
   @doc """
@@ -35,7 +40,10 @@ defmodule Byaloppis.Fleamarket do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event!(id), do: Repo.get!(Event, id)
+  def get_event!(id) do
+    Repo.get!(Event, id)
+    |> Repo.preload(:tables)
+  end
 
   @doc """
   Creates a event.
@@ -102,8 +110,6 @@ defmodule Byaloppis.Fleamarket do
     Event.changeset(event, attrs)
   end
 
-  alias Byaloppis.Fleamarket.Table
-
   @doc """
   Returns the list of tables.
 
@@ -145,9 +151,13 @@ defmodule Byaloppis.Fleamarket do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_table(attrs \\ %{}) do
+  def create_table(%{"event_id" => event_id} = attrs \\ %{}) do
+    IO.inspect(event_id)
+    event = Repo.get!(Event, event_id)
     %Table{}
     |> Table.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:event, event)
+    |> IO.inspect
     |> Repo.insert()
   end
 

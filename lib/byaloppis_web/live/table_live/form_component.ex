@@ -28,6 +28,8 @@ defmodule ByaloppisWeb.TableLive.FormComponent do
         <div phx-hook="Map" id='map' class="rounded relative aspect-square w-full"
             style="aspect-ratio: 1 / 1; width: 100%; height: 300px" phx-update="ignore"></div>
         <.input field={@form[:description]} type="textarea" label="Description" />
+        <.input field={@form[:lng]} type="hidden"/>
+        <.input field={@form[:lat]} type="hidden"/>
         <:actions>
           <.button phx-disable-with="Saving...">Save Table</.button>
         </:actions>

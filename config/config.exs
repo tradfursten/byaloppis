@@ -8,7 +8,8 @@
 import Config
 
 config :byaloppis,
-  ecto_repos: [Byaloppis.Repo]
+  ecto_repos: [Byaloppis.Repo],
+  mapbox_access_token: System.fetch_env!("MAPBOX_ACCESS_TOKEN")
 
 # Configures the endpoint
 config :byaloppis, ByaloppisWeb.Endpoint,

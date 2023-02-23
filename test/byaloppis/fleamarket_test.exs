@@ -60,4 +60,64 @@ defmodule Byaloppis.FleamarketTest do
       assert %Ecto.Changeset{} = Fleamarket.change_event(event)
     end
   end
+
+  describe "tables" do
+    alias Byaloppis.Fleamarket.Table
+
+    import Byaloppis.FleamarketFixtures
+
+    @invalid_attrs %{address: nil, description: nil, lat: nil, lng: nil}
+
+    test "list_tables/0 returns all tables" do
+      table = table_fixture()
+      assert Fleamarket.list_tables() == [table]
+    end
+
+    test "get_table!/1 returns the table with given id" do
+      table = table_fixture()
+      assert Fleamarket.get_table!(table.id) == table
+    end
+
+    test "create_table/1 with valid data creates a table" do
+      valid_attrs = %{address: "some address", description: "some description", lat: 120.5, lng: 120.5}
+
+      assert {:ok, %Table{} = table} = Fleamarket.create_table(valid_attrs)
+      assert table.address == "some address"
+      assert table.description == "some description"
+      assert table.lat == 120.5
+      assert table.lng == 120.5
+    end
+
+    test "create_table/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Fleamarket.create_table(@invalid_attrs)
+    end
+
+    test "update_table/2 with valid data updates the table" do
+      table = table_fixture()
+      update_attrs = %{address: "some updated address", description: "some updated description", lat: 456.7, lng: 456.7}
+
+      assert {:ok, %Table{} = table} = Fleamarket.update_table(table, update_attrs)
+      assert table.address == "some updated address"
+      assert table.description == "some updated description"
+      assert table.lat == 456.7
+      assert table.lng == 456.7
+    end
+
+    test "update_table/2 with invalid data returns error changeset" do
+      table = table_fixture()
+      assert {:error, %Ecto.Changeset{}} = Fleamarket.update_table(table, @invalid_attrs)
+      assert table == Fleamarket.get_table!(table.id)
+    end
+
+    test "delete_table/1 deletes the table" do
+      table = table_fixture()
+      assert {:ok, %Table{}} = Fleamarket.delete_table(table)
+      assert_raise Ecto.NoResultsError, fn -> Fleamarket.get_table!(table.id) end
+    end
+
+    test "change_table/1 returns a table changeset" do
+      table = table_fixture()
+      assert %Ecto.Changeset{} = Fleamarket.change_table(table)
+    end
+  end
 end

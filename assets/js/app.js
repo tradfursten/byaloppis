@@ -23,7 +23,83 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+
+let Hooks = {}
+
+Hooks.Map = {
+  mounted() {
+    const pushEventToComponent = (event, payload) => {
+      this.pushEventTo(this.el, event, payload);
+    };
+
+    mapboxgl.accessToken = window.mapboxAccessToken
+    var map = new mapboxgl.Map({
+      container: "map",
+      style: 'mapbox://styles/mapbox/streets-v11',
+      zoom: 14,
+      center: [20.252, 63.824]
+    });
+
+    var marker = null;
+
+    var markers = [];
+
+    map.on("load", () => {
+      map.addSource("location", {
+        "type": "geojson",
+        "data": {
+          "type": "Point",
+          "coordinates": [20.252, 63.824]
+        }
+      })
+
+      map.addLayer({
+        'id': 'location',
+        'type': 'circle',
+        'source': 'location',
+        'paint': {
+          'circle-radius': 5,
+          'circle-color': '#007cbf'
+        }
+      })
+      map.resize();
+    })
+
+    this.handleEvent("position", (coords) => {
+      map.flyTo({
+        center: [
+          coords.lng,
+          coords.lat
+        ],
+        zoom: 14
+      })
+      if (marker !== null) {
+        marker.remove()
+      }
+      marker = new mapboxgl.Marker({draggable: true})
+        .setLngLat([coords.lng, coords.lat])
+        .addTo(map);
+
+      function onDragEnd() {
+        const lngLat = marker.getLngLat();
+        pushEventToComponent('set_lat_lng', { lat: lngLat.lat, lng: lngLat.lng });
+      }
+           
+      marker.on('dragend', onDragEnd);
+    })
+
+    this.handleEvent("marker", (coords) => {
+       markers.push(new mapboxgl.Marker()
+        .setLngLat([coords.lng, coords.lat])
+        .addTo(map));
+
+
+    })
+  }
+}
+
+
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks})
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})

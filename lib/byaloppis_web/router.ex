@@ -28,6 +28,13 @@ defmodule ByaloppisWeb.Router do
 
     live "/events/:id", EventLive.Show, :show
     live "/events/:id/show/edit", EventLive.Show, :edit
+
+    live "/tables", TableLive.Index, :index
+    live "/tables/new", TableLive.Index, :new
+    live "/tables/:id/edit", TableLive.Index, :edit
+
+    live "/tables/:id", TableLive.Show, :show
+    live "/tables/:id/show/edit", TableLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

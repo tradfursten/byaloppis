@@ -19,4 +19,21 @@ defmodule Byaloppis.FleamarketFixtures do
 
     event
   end
+
+  @doc """
+  Generate a table.
+  """
+  def table_fixture(attrs \\ %{}) do
+    {:ok, table} =
+      attrs
+      |> Enum.into(%{
+        address: "some address",
+        description: "some description",
+        lat: 120.5,
+        lng: 120.5
+      })
+      |> Byaloppis.Fleamarket.create_table()
+
+    table
+  end
 end

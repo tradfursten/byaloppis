@@ -37,7 +37,7 @@ Hooks.Map = {
       container: "map",
       style: 'mapbox://styles/mapbox/streets-v11',
       zoom: 14,
-      maxZoom: 18,
+      maxZoom: 17,
       center: [20.252, 63.824]
     });
 
@@ -73,7 +73,7 @@ Hooks.Map = {
           coords.lat
         ],
         zoom: 14
-      })
+      }, { animate: false })
       if (marker !== null) {
         marker.remove()
       }
@@ -96,10 +96,19 @@ Hooks.Map = {
     })
 
     this.handleEvent("list_tables", (e) => {
+      console.log(e)
       markers = [];
       e.tables.forEach(it => {
+        const popup = new mapboxgl
+          .Popup({ offset: 25 })
+          .setHTML(`<a href='/tables/${it.id}' 
+            class='text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700' 
+            onclick='liveSocket.redirect("/tables/${it.id}"); return false;'>
+          ${it.address}
+          </a>`);
         markers.push(new mapboxgl.Marker()
         .setLngLat([it.lng, it.lat])
+        .setPopup(popup)
         .addTo(map));
       });
       const bounds = new mapboxgl.LngLatBounds();
@@ -108,9 +117,20 @@ Hooks.Map = {
           bounds.extend(it.getLngLat());
       });
       
-      map.fitBounds(bounds);
+      map.fitBounds(bounds, { padding: 30, animate: false });
       
     });
+  }
+}
+
+Hooks.LocalTime = {
+  mounted(){
+    this.updated()
+  },
+  updated() {
+    console.log(this.el.textContent)
+    let dt = new Date(this.el.textContent);
+    this.el.textContent = dt.toLocaleString()
   }
 }
 

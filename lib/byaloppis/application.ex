@@ -7,6 +7,7 @@ defmodule Byaloppis.Application do
 
   @impl true
   def start(_type, _args) do
+    Byaloppis.Release.migrate()
     children = [
       # Start the Telemetry supervisor
       ByaloppisWeb.Telemetry,

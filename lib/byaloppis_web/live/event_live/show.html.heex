@@ -1,32 +1,43 @@
 <.header>
-  Event <%= @event.id %>
-  <:subtitle>This is a event record from your database.</:subtitle>
+  <div class="flex-none flex justify-between">
+    <h1><%= @event.name %></h1>
+    <time phx-hook="LocalTime" id="my-local-time"><%= @event.date %></time>
+  </div>
+  <:subtitle><%= @event.description %></:subtitle>
   <:actions>
-    <.link patch={~p"/events/#{@event}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit event</.button>
+    <.link patch={~p"/events/#{@event}/show/edit"} phx-click={JS.push_focus()} >
+      <.button_secondary>Edit event</.button_secondary>
+    </.link>
+    <.link navigate={~p"/events/#{@event}/tables/new"}>
+      <.button>New Table</.button>
     </.link>
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Name"><%= @event.name %></:item>
-  <:item title="Date"><%= @event.date %></:item>
-  <:item title="Description"><%= @event.description %></:item>
-</.list>
 <div phx-hook="Map" id='map' class="rounded relative aspect-square w-full"
     style="aspect-ratio: 1 / 1; width: 100%; height: 300px" phx-update="ignore"></div>
-<ul>
-  <%= for %{address: address} <- @event.tables do %>
-    <li> <%= address %> </li>
+
+<h2 class="pt-8 text-base font-semibold leading-8 text-zinc-800">Utställare</h2>
+<ul class="flex flex-col gap-4 pt-2 pb-4">
+  <%= for %{address: address, id: id} <- @event.tables do %>
+    <li>
+      <.link 
+        navigate={~p"/tables/#{id}"}
+        class='text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700'>
+        <%= address %>
+      </.link>
+    </li>
   <% end %>
 </ul>
 
-<.back navigate={~p"/events"}>Back to events</.back>
 
-<.link navigate={~p"/events/#{@event}/tables/new"}>
-  <.button>New Table</.button>
-</.link>
+<div class="flex justify-between items-baseline">
+  <.back navigate={~p"/events"}>Back to events</.back>
 
+  <.link navigate={~p"/events/#{@event}/tables/new"}>
+    <.button>New Table</.button>
+  </.link>
+</div>
 <.modal :if={@live_action == :edit} id="event-modal" show on_cancel={JS.patch(~p"/events/#{@event}")}>
   <.live_component
     module={ByaloppisWeb.EventLive.FormComponent}

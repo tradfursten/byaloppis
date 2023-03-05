@@ -266,6 +266,26 @@ defmodule ByaloppisWeb.CoreComponents do
     </button>
     """
   end
+  attr :type, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
+
+  slot :inner_block, required: true
+  def button_secondary(assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={[
+        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-300 hover:bg-zinc-200 py-2 px-3",
+        "text-sm font-semibold leading-6 text-zinc-900 active:text-zinc-900/80",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
 
   @doc """
   Renders an input with label and error messages.
@@ -565,7 +585,7 @@ defmodule ByaloppisWeb.CoreComponents do
 
   def back(assigns) do
     ~H"""
-    <div class="mt-16">
+    <div class="">
       <.link
         navigate={@navigate}
         class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"

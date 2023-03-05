@@ -5,7 +5,7 @@ defmodule Byaloppis.Fleamarket.Event do
   alias Byaloppis.Fleamarket.Table
 
   schema "events" do
-    field :date, :naive_datetime
+    field :date, :utc_datetime
     field :description, :string
     field :name, :string
 

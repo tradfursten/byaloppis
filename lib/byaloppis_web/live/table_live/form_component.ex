@@ -50,11 +50,12 @@ defmodule ByaloppisWeb.TableLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"_target" => ["table", "address"], "table" => %{"address" => address} = table_params}, socket) do
-    IO.inspect(socket.assigns)
+    IO.puts("Search for address")
     #url = "https://1902d58c-e651-4162-a087-6564338cf4fc.mock.pstmn.io/mock_mapbox"
     url = "https://api.mapbox.com/geocoding/v5/mapbox.places/#{URI.encode(address)}.json?proximity=ip&types=place%2Cpostcode%2Caddress&access_token=#{Application.fetch_env!(:byaloppis, :mapbox_access_token)}"
     response = HTTPoison.get!(url)
     {:ok, body} = Poison.decode(response.body)
+    # fixa så att vi kan hantera nil
     suggestions = body["features"]
     |> Enum.map(fn %{"place_name" => name, "geometry" => %{"coordinates" => cords}, "id" => id} -> %{name: name, cords: cords, id: id} end)
 
